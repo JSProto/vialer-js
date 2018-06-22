@@ -11,7 +11,7 @@
     },
     "browser_action": {
         "default_icon": {
-          "22": "img/menubar-inactive.png"
+            "22": "img/menubar-inactive.png"
         },
         "default_popup": "index.html"
     },
@@ -57,18 +57,16 @@
         "tabs"
     ],
     "content_security_policy": "script-src 'self'; object-src 'self'",
-    "content_scripts": [
-        {
-            "matches": [
-                "<all_urls>"
-            ],
-            "js": [
-                "js/app_observer.js"
-            ],
-            "run_at": "document_end",
-            "all_frames": true
-        }
-    ],
+    "content_scripts": [{
+        "matches": [
+            "<all_urls>"
+        ],
+        "js": [
+            "js/app_observer.js"
+        ],
+        "run_at": "document_end",
+        "all_frames": true
+    }],
     "web_accessible_resources": [
         "fonts/*.woff2",
         "img/*.png",
