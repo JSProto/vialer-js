@@ -6,7 +6,7 @@ const test = require('tape')
 
 
 require('../../src/js/bg/vendor')
-require('../../src/js/i18n/nl')
+require('../../src/js/i18n/en')
 const {AppBackground, bgOptions} = require('../../src/js/bg')
 
 
@@ -49,14 +49,14 @@ test('Translation validity.', async function(t) {
             // All translations must start with lower case.
             if (($t[0] !== $t[0].toLowerCase() && $t[1] !== $t[1].toUpperCase())) faultyUppercase.push($t)
             translations.push($t)
-            if (!($t in global.translations.nl)) {
+            if (!($t in global.translations.en)) {
                 missing.push($t)
             }
         })
     }
 
     // Check if we have translations that are not defined; i.e. that are redundant.
-    for (const translation of Object.keys(global.translations.nl)) {
+    for (const translation of Object.keys(global.translations.en)) {
         if (!(translations.includes(translation))) {
             redundant.push(translation)
         }

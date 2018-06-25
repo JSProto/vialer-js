@@ -103,10 +103,8 @@ class ModuleUser extends Module {
             this.app.setSession(username)
         }
 
-        let apiParams
-
-        if (token) apiParams = {email: username, password, two_factor_token: token}
-        else apiParams = {email: username, password}
+        let apiParams = {email: username, password};
+        if (token) apiParams.two_factor_token = token;
 
         let res = await this.app.api.client.post('api/permission/apitoken/', apiParams)
         // A login failure. Give the user feedback about what went wrong.

@@ -18,7 +18,7 @@ class AppElectron {
         app.on('ready', this.createWindow);
         app.commandLine.appendSwitch('ignore-certificate-errors');
         // Quit when all windows are closed.
-        app.on('window-all-closed', function () {
+        app.on('window-all-closed', () => {
             // On OS X it is common for applications and their menu bar
             // to stay active until the user quits explicitly with Cmd + Q
             if (process.platform !== 'darwin') {
@@ -26,7 +26,7 @@ class AppElectron {
             }
         })
 
-        app.on('activate', function () {
+        app.on('activate', () => {
             // On OS X it's common to re-create a window in the app when the
             // dock icon is clicked and there are no other windows open.
             if (this.mainWindow === null) this.createWindow();
@@ -42,7 +42,7 @@ class AppElectron {
         // Create the browser window.
         this.mainWindow = new BrowserWindow({
             autoHideMenuBar: true,
-            height: 186,
+            height: 495,
             icon: path.join(__dirname, 'img', 'electron-icon.png'),
             resizable: false,
             show: false,
@@ -52,6 +52,7 @@ class AppElectron {
 
         ipcMain.on('resize-window', (event, data) => {
             const currentSize = this.mainWindow.getContentSize();
+
             if (data.height !== currentSize[1]) {
                 if (data.height > 600) data.height = 600;
                 this.mainWindow.setSize(500, data.height, true);
@@ -68,7 +69,7 @@ class AppElectron {
         this.mainWindow.once('ready-to-show', () => this.mainWindow.show());
 
         // Emitted when the window is closed.
-        this.mainWindow.on('closed', function () {
+        this.mainWindow.on('closed', () => {
             // Dereference the window object, usually you would store windows
             // in an array if your app supports multi windows, this is the time
             // when you should delete the corresponding element.

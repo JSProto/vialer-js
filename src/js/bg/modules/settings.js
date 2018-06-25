@@ -42,7 +42,7 @@ class ModuleSettings extends Module {
                     {id: 'nl', name: this.app.$t('dutch').capitalize()},
                     {id: 'en', name: this.app.$t('english').capitalize()},
                 ],
-                selected: {id: 'nl', name: this.app.$t('dutch')},
+                selected: {id: 'en', name: this.app.$t('english')},
             },
             platform: {
                 enabled: true,
