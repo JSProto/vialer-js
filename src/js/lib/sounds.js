@@ -129,8 +129,6 @@ class DtmfTone {
             }
         }
 
-        this.app.logger.debug(`${this} SET!!! sink ${JSON.stringify(sink)} sink`);
-
         this.audio.setSinkId(sink)
 
         const frequencyPair = this.frequencies[key]
