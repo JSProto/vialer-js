@@ -143,7 +143,7 @@
         "array-bracket-spacing": [0, "never"],
         "accessor-pairs": 0,
         "block-scoped-var": 0,
-        "brace-style": [2, "1tbs", { "allowSingleLine": true }],
+        "brace-style": [2, "stroustrup", { "allowSingleLine": true }],
         "callback-return": 0,
         "camelcase": 0,
         "comma-dangle": [2, "always-multiline"],

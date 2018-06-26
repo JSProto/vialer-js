@@ -278,7 +278,8 @@ class ModuleCalls extends Module {
                 // All ongoing calls are closing. Accept the call.
                 if (callIds.length === closingCalls.length) {
                     acceptCall = true
-                } else {
+                }
+                else {
                     // Filter non-closing calls from all Call objects.
                     const notClosingCalls = callIds.filter((i) => !closingCalls.includes(i))
                     // From these Call objects, see which ones are not `new`.
@@ -287,7 +288,8 @@ class ModuleCalls extends Module {
                     if (notClosingNotNewCalls.length) {
                         acceptCall = false
                         declineReason = 'call(s) ongoing'
-                    } else acceptCall = true
+                    }
+                    else acceptCall = true
                 }
             }
 
@@ -309,7 +311,8 @@ class ModuleCalls extends Module {
             if (!acceptCall) {
                 this.app.logger.info(`${this}decline incoming call (${declineReason})`)
                 call.terminate()
-            } else {
+            }
+            else {
                 Vue.set(this.app.state.calls.calls, call.id, call.state)
                 this.app.emit('fg:set_state', {action: 'upsert', path: `calls.calls.${call.id}`, state: call.state})
             }
@@ -360,7 +363,8 @@ class ModuleCalls extends Module {
         })
 
         this.ua.on('registrationFailed', (reason) => {
-            this.app.setState({calls: {ua: {status: 'registration_failed'}}})
+            this.app.setState({calls: {ua: {status: 'registration_failed'}}});
+            this.app.logger.debug(`${this}ua registration failed: ${reason}`);
         })
     }
 
@@ -389,6 +393,7 @@ class ModuleCalls extends Module {
                 modifiers: [this._formatSdp.bind(this)],
             },
             traceSip: false,
+            iceCheckingTimeout: 500,
             userAgentString: this._userAgent(),
             wsServers: [`wss://${settings.sipEndpoint}`],
         }
@@ -400,8 +405,10 @@ class ModuleCalls extends Module {
             options.authorizationUser = settings.webrtc.account.selected.username
             options.password = settings.webrtc.account.selected.password
             options.register = true
-            options.uri = `sip:${settings.webrtc.account.selected.username}@voipgrid.nl`
-        } else {
+            let domain = settings.sipEndpoint.replace(/:.+/, '');
+            options.uri = `sip:${settings.webrtc.account.selected.username}@${domain}`
+        }
+        else {
             // Login with platform email without SIP register.
             options.authorizationUser = this.app.state.user.username
             // Use the platform user token when logging in; not the password.
