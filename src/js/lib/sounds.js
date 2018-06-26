@@ -47,13 +47,13 @@ class BusyTone {
         if (!sink) {
             const speaker = this.app.state.settings.webrtc.devices
             if (speaker.enabled) {
-                sink = this.app.state.settings.webrtc.devices.sinks.speakerOutput
+                sink = this.app.state.settings.webrtc.devices.sinks.speakerOutput.id
             } else {
-                sink = this.app.state.settings.webrtc.devices.sinks.headsetOutput
+                sink = this.app.state.settings.webrtc.devices.sinks.headsetOutput.id
             }
         }
 
-        this.audio.setSinkId(sink.id)
+        this.audio.setSinkId(sink)
 
         const gainNode = context.createGain()
         gainNode.connect(this.dest)
@@ -123,11 +123,13 @@ class DtmfTone {
         if (!sink) {
             const speaker = this.app.state.settings.webrtc.devices.speaker
             if (speaker.enabled) {
-                sink = this.app.state.settings.webrtc.devices.sinks.speakerOutput
+                sink = this.app.state.settings.webrtc.devices.sinks.speakerOutput.id
             } else {
-                sink = this.app.state.settings.webrtc.devices.sinks.headsetOutput
+                sink = this.app.state.settings.webrtc.devices.sinks.headsetOutput.id
             }
         }
+
+        this.app.logger.debug(`${this} SET!!! sink ${JSON.stringify(sink)} sink`);
 
         this.audio.setSinkId(sink)
 
@@ -295,9 +297,9 @@ class RingTone extends EventEmitter {
         this.loop = loop
 
         if (!sink) {
-            sink = this.app.state.settings.webrtc.devices.sinks.ringOutput
+            sink = this.app.state.settings.webrtc.devices.sinks.ringOutput.id;
         }
-        this.audio.setSinkId(sink.id)
+        this.audio.setSinkId(sink)
         // Loop the sound.
         if (loop) {
             this.audio.addEventListener('ended', () => {
