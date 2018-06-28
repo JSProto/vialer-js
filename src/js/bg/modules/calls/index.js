@@ -390,7 +390,7 @@ class ModuleCalls extends Module {
                     audio: true,
                     video: false,
                 },
-                modifiers: [this._formatSdp.bind(this)],
+                // modifiers: [this._formatSdp.bind(this)],
             },
             traceSip: false,
             iceCheckingTimeout: 500,
