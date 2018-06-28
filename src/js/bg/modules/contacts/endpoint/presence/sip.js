@@ -64,7 +64,8 @@ class PresenceSip extends Presence {
     */
     subscribe() {
         return new Promise((resolve, reject) => {
-            this.subscription = this.app.modules.calls.ua.subscribe(`${this.endpoint.state.id}@voipgrid.nl`, 'dialog')
+            let domain = this.app.state.settings.sipEndpoint.replace(/:.+/, '');
+            this.subscription = this.app.modules.calls.ua.subscribe(`${this.endpoint.state.id}@${domain}`, 'dialog')
             this.subscription.on('notify', (notification) => {
                 const status = this._statusFromDialog(notification)
                 this.endpoint.setState({status})
