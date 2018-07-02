@@ -149,16 +149,19 @@ class Helpers {
     /**
     * Generate a brand-specific distribution name.
     * @param {String} brandName - The brand name to use for the distribution.
+    * @param {String} ext - The file extension.
     * @returns {String} - The distribution name to use.
     */
-    distributionName(brandName) {
-        let distName
-        if (this.settings.BUILD_TARGET === 'electron') {
-            distName = `${this.settings.BRAND_TARGET}-${this.settings.BUILD_PLATFORM}-${this.settings.BUILD_ARCH}-${this.settings.PACKAGE.version}.zip`
-        } else distName = `${this.settings.BRAND_TARGET}-${this.settings.BUILD_TARGET}-${this.settings.PACKAGE.version}.zip`
-        return distName
-    }
 
+    distributionName(brandName, ext = 'zip') {
+        let name = `${this.settings.BRAND_TARGET}-${this.settings.BUILD_TARGET}-${this.settings.PACKAGE.version}`;
+
+        if (this.settings.BUILD_TARGET === 'electron') {
+            name = `${this.settings.BRAND_TARGET}-${this.settings.BUILD_PLATFORM}-${this.settings.BUILD_ARCH}-${this.settings.PACKAGE.version}`
+        }
+
+        return path.format({name, ext});
+    }
 
     /**
     * Converts branding data to a valid SCSS variables string.

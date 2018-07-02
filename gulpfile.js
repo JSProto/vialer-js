@@ -44,7 +44,7 @@ let settings = {}
 
 settings.BUILD_ARCH = argv.arch ? argv.arch : 'x64' // all, or one or more of: ia32, x64, armv7l, arm64, mips64el
 settings.BUILD_DIR = process.env.BUILD_DIR || path.join('./', 'build')
-settings.BUILD_PLATFORM = argv.platform ? argv.platform : 'linux' // all, or one or more of: darwin, linux, mas, win32
+settings.BUILD_PLATFORM = argv.platform ? argv.platform : 'darwin' // all, or one or more of: darwin, linux, mas, win32
 settings.BRAND_TARGET = argv.brand ? argv.brand : 'vialer'
 settings.BUILD_TARGET = argv.target ? argv.target : 'chrome'
 settings.BUILD_TARGETS = ['chrome', 'docs', 'electron', 'edge', 'firefox', 'node', 'webview']
@@ -165,9 +165,16 @@ gulp.task('build', 'Make a branded unoptimized development build.', (done) => {
     if (settings.BUILD_TARGET === 'docs') {
         runSequence(['docs'], done)
         return
-    } else if (settings.BUILD_TARGET === 'electron') targetTasks = ['js-electron']
-    else if (settings.BUILD_TARGET === 'webview') targetTasks = ['js-vendor', 'js-app-bg', 'js-app-fg']
-    else if (['chrome', 'firefox'].includes(settings.BUILD_TARGET)) targetTasks = ['js-vendor', 'js-app-bg', 'js-app-fg', 'js-app-observer', 'manifest']
+    }
+    else if (settings.BUILD_TARGET === 'electron') {
+        targetTasks = ['js-electron']
+    }
+    else if (settings.BUILD_TARGET === 'webview') {
+        targetTasks = ['js-vendor', 'js-app-bg', 'js-app-fg']
+    }
+    else if (['chrome', 'firefox'].includes(settings.BUILD_TARGET)) {
+        targetTasks = ['js-vendor', 'js-app-bg', 'js-app-fg', 'js-app-observer', 'manifest']
+    }
 
     runSequence(['assets', 'templates', 'translations', 'html', 'scss', 'scss-vendor'].concat(targetTasks), done)
 }, {options: taskOptions.all})
@@ -177,16 +184,18 @@ gulp.task('build-targets', 'Build all targets.', (done) => {
     // Refresh the brand content with each build.
     let electronTargetTasks = ['assets', 'html', 'scss', 'js-electron-main', 'js-vendor']
     let pluginTargetTasks = ['assets', 'html', 'scss', 'js-vendor', 'js-app-bg', 'js-app-fg', 'manifest']
+
     settings.BUILD_TARGET = 'chrome'
     runSequence(pluginTargetTasks, () => {
+
         settings.BUILD_TARGET = 'firefox'
         runSequence(pluginTargetTasks, () => {
+
             settings.BUILD_TARGET = 'edge'
             runSequence(pluginTargetTasks, () => {
+
                 settings.BUILD_TARGET = 'electron'
-                runSequence(electronTargetTasks, () => {
-                    done()
-                })
+                runSequence(electronTargetTasks, done)
             })
         })
     })
@@ -220,23 +229,114 @@ gulp.task('build-dist', 'Make an optimized build suitable for distribution.', ['
         if (['chrome', 'firefox'].includes(settings.BUILD_TARGET)) {
             archive.directory(buildDir, false)
             archive.finalize()
-        } else if (settings.BUILD_TARGET === 'electron') {
-            const iconParam = `--icon=${buildDir}/img/electron-icon.png`
-            let buildParams = `--arch=${settings.BUILD_ARCH} --asar --overwrite --platform=${settings.BUILD_PLATFORM} --prune=true`
+        }
+        else if (settings.BUILD_TARGET === 'electron') {
+            let buildParams = [
+                '--asar',
+                '--overwrite',
+                `--platform=${settings.BUILD_PLATFORM}`,
+                `--arch=${settings.BUILD_ARCH}`,
+                '--prune=true'
+            ];
+
             // This is broken when used in combination with Wine due to rcedit.
             // See: https://github.com/electron-userland/electron-packager/issues/769
-            if (settings.BUILD_PLATFORM !== 'win32') buildParams += iconParam
+            if (settings.BUILD_PLATFORM !== 'win32') {
+                buildParams.push(`--icon=${buildDir}/img/electron-icon.png`);
+            }
+
             const distBuildName = `${settings.BRAND_TARGET}-${settings.BUILD_PLATFORM}-${settings.BUILD_ARCH}`
-            let execCommand = `electron-packager ${buildDir} ${settings.BRAND_TARGET} ${buildParams} --out=${distDir}`
+            let execCommand = `electron-packager ${buildDir} ${settings.BRAND_TARGET} ${buildParams.join(' ')} --out=${distDir}`
+
             childExec(execCommand, undefined, (err, stdout, stderr) => {
                 if (stderr) gutil.log(stderr)
                 if (stdout) gutil.log(stdout)
                 archive.directory(path.join(distDir, distBuildName), distBuildName)
                 archive.finalize()
-            })
+            });
         }
     })
 }, {options: taskOptions.all})
+
+
+gulp.task('build-installer', 'Make installer for distribution.', /* ['build-dist'],  */ (done) => {
+
+    if (settings.BUILD_TARGET !== 'electron') return;
+
+    const distBuildName = `${settings.BRAND_TARGET}-${settings.BUILD_PLATFORM}-${settings.BUILD_ARCH}`
+    const buildDir = path.join(__dirname, 'build', settings.BRAND_TARGET, settings.BUILD_TARGET)
+    const distDir = path.join(__dirname, 'dist', settings.BRAND_TARGET);
+    const icon = `${buildDir}/img/electron-icon.png`;
+
+    let platformOptions = {
+        win32: function(){
+            return {
+                appDirectory: path.join(distDir, distBuildName + '/'),
+                authors: settings.PACKAGE.author,
+                noMsi: true,
+                outputDirectory: path.join(distDir, `${distBuildName}-installer`),
+                exe: `${settings.BRAND_TARGET}.exe`,
+                setupExe: `${distBuildName}-setup.exe`,
+                // setupIcon: icon
+            };
+        },
+
+        darwin: function(){
+            const distAppFile = path.join(distDir, distBuildName, `${settings.BRAND_TARGET}.app`);
+
+            let distName = helpers.distributionName(settings.BRAND_TARGET, '')
+
+            return {
+                appPath: distAppFile,
+                name: distName,
+                out: distDir,
+                // icon: 'src/assets/icons/mac/icon.icns',
+                overwrite: true
+            };
+        },
+
+        linux: function(){
+
+            let distName = helpers.distributionName(settings.BRAND_TARGET, '');
+
+            return {
+                name: distName,
+                src: path.join(distDir, distBuildName),
+                dest: distDir,
+                arch: settings.BUILD_ARCH //'amd64'
+            };
+        }
+    };
+
+
+    function installer(){
+        const platform = settings.BUILD_PLATFORM;
+        let options = platformOptions[platform]();
+
+        if (platform === 'win32') {
+            return require('electron-winstaller').createWindowsInstaller(options);
+        }
+        else if (platform === 'linux') {
+            return require('electron-installer-debian')(options);
+        }
+        else if (platform === 'darwin') {
+            return new Promise(function(resolve, reject) {
+                require('electron-installer-dmg')(options, err => err ? reject(err) : resolve());
+            });
+        }
+
+        throw new Error('installer unknown platform: ' + platform);
+    }
+
+
+    installer().then(done).catch(e => {
+        gutil.log(e);
+        done();
+    });
+
+}, {options: taskOptions.all})
+
+
 
 
 gulp.task('build-run', 'Make a development build and run it in the target environment.', () => {
