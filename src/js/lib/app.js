@@ -65,10 +65,11 @@ class App extends Skeleton {
                 await navigator.mediaDevices.getUserMedia(this._getUserMediaFlags())
                 this.setState({settings: {webrtc: {media: {permission: true}}}})
             } catch (err) {
+                this.logger.error(err)
                 // There are no devices at all. Spawn a warning.
                 if (err.message === 'Requested device not found') {
                     if (this.env.role.fg) {
-                        this.vm.$notify({icon: 'warning', message: this.$t('no audio devices found.'), type: 'warning'})
+                        this.notify({icon: 'warning', message: this.$t('no audio devices found.'), type: 'warning'})
                     }
                 }
 
@@ -245,7 +246,7 @@ class App extends Skeleton {
                 },
             },
             AUDIO_PROCESSING: {
-                audio: true,
+                audio: {},
             },
         }
 
@@ -253,7 +254,7 @@ class App extends Skeleton {
         const inputSink = this.state.settings.webrtc.devices.sinks.headsetInput.id
 
         if (inputSink && inputSink !== 'default') {
-            this.logger.debug(`${this}usermedia stream on sink: ${inputSink}`)
+            this.logger.debug(`${this}usermedia stream forced to sink: ${inputSink}`)
             userMediaFlags.audio.deviceId = inputSink
         }
         return userMediaFlags
@@ -275,6 +276,23 @@ class App extends Skeleton {
         }
 
         return state
+    }
+
+
+    /**
+    * Store a notification in the (memory) store, which lets
+    * the notification component render the notification.
+    * @param {Object} notification - A notification object to add.
+    */
+    notify(notification) {
+        if (typeof notification.timeout === 'undefined') {
+            if (notification.type === 'info') notification.timeout = 3000
+            else notification.timeout = 4500
+        }
+        notification.id = shortid.generate()
+        let notifications = this.state.app.notifications
+        notifications.push(notification)
+        this.setState({app: {notifications}})
     }
 
 

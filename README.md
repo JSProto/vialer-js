@@ -1,7 +1,32 @@
-[![Build status](https://travis-ci.com/VoIPGRID/vialer-js.svg?branch=develop)](https://travis-ci.com/VoIPGRID/vialer-js)
+[![CircleCI](https://circleci.com/gh/vialer/vialer-js/tree/develop.svg?style=svg)](https://circleci.com/gh/vialer/vialer-js/tree/develop)
+
+# Quickstart
+## Requirements
+* Node.js 10.0.0 or higher
+* Npm 6 or higher
+* Electron executable for the desktop version (optional)
+
+
+## Setup
+Checkout the project and install its dependencies from npm:
+```bash
+git clone git@github.com:VoIPGRID/vialer-js.git
+cd vialer-js
+npm i
+# Setup the default settings file:
+cp ./.vialer-jsrc.example ~/.vialer-jsrc
+# Build a Chrome extension:
+gulp build
+```
+
+Go to `chrome://extensions` in your Chrome/Chromium browser and point to the
+`build/vialer/chrome` directory. You now have a Vialer-js softphone running
+as a Chrome WebExtension! Checkout {@tutorial install} to
+learn more about different builds.
+
 
 # About Vialer-js
-Vialer-js is a free and open-source communication platform in development.
+Vialer-js is a free and open-source communication platform.
 It's purpose is to be an attractive unified communication tool to end-users,
 who value cross-platform user- and privacy-friendly features, like being able
 to accept and place calls over a phone network, setting up (p2p) video
@@ -12,9 +37,9 @@ conferences, chatting and sharing files; all over secured encrypted channels.
 <img align="left" src="https://vialer-js.io/screenshot-3.png" height="200">
 <img src="https://vialer-js.io/screenshot-4.png" height="200">
 
-The project is written in environment-agnostic JavaScript using a simple and
-powerful reactive data-orientated design. It can operate as a WebExtension for
-Blink & Gecko-compatible browsers, a website widget, a desktop app(Electron)
+Written in environment-agnostic JavaScript, using a simple but powerful reactive
+data-orientated design, it can operate as a WebExtension for Blink &
+Gecko-compatible browsers, a website widget, a desktop app(Electron)
 or as a headless Node.js application, while at the same time keeping it easy
 for developers to implement new features for all platforms at once at a very
 fast pace.
@@ -60,28 +85,3 @@ It supports most of the features you would expect from a PBX softphone, like:
 * On-hold & call switching
 * DTMF support
 * VoIP-account selection and feature detection (avpf/encryption)
-
-
-# Quickstart
-## Requirements
-* Node.js 10.0.0 or higher
-* Npm 6 or higher
-* Electron executable for the desktop version (optional)
-
-
-## Setup
-Checkout the project and install its dependencies from npm:
-```bash
-git clone git@github.com:VoIPGRID/vialer-js.git
-cd vialer-js
-npm i
-# Setup the default settings file:
-cp ./.vialer-jsrc.example ~/.vialer-jsrc
-# Build a Chrome extension:
-gulp build
-```
-
-Go to `chrome://extensions` in your Chrome/Chromium browser and point to the
-`build/vialer/chrome` directory. You now have a Vialer-js softphone running
-as a Chrome WebExtension! Checkout {@tutorial install} to
-learn more about different builds.

@@ -62,7 +62,7 @@
                 </template>
                 <option :selected="option[idfield] == model.id" :value="option[idfield]" v-for="option in options" v-else>
                     <template v-if="option[idfield] === null && placeholder">{{placeholder.capitalize()}}</template>
-                    <template v-else>{{$t(option.name)}}</template>
+                    <template v-else>{{$t(option.name).capitalize()}}</template>
                 </option>
             </select>
         </div>
@@ -71,7 +71,7 @@
     <em class="help cf" v-if="help">{{help}}</em>
     <slot name="select-after"></slot>
 
-    <span v-if="invalidFieldValue" class="validation-message is-danger" v-html="validationMessage"></span>
+    <span v-if="invalidFieldValue && validationMessage" class="validation-message is-danger" v-html="validationMessage"></span>
 </div>
 
 

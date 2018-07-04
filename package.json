@@ -1,8 +1,8 @@
 {
     "name": "vialer-js",
     "productName": "vialer-js",
-    "version": "3.0.179",
-    "description": "Click-to-Dial, status updates and queue monitoring for Firefox, Chrome and Electron.",
+    "version": "3.0.206",
+    "description": "Open-source WebRTC softphone.",
     "engines": {
         "node": ">=8.0.0"
     },
@@ -10,13 +10,13 @@
         "build-dist-win": "gulp build-dist --target electron --platform win32 --arch ia32",
         "app": "gulp build-run --target electron",
         "changelog": "conventional-changelog -p angular -i CHANGELOG.md -s -r 0",
-        "test": "gulp test",
+        "test": "gulp test;gulp test-browser",
         "lint-js": "./node_modules/.bin/eslint './src/**/*.js'",
         "lint-scss": "./node_modules/sass-lint/bin/sass-lint.js -v -c ./.sass-lint.yml 'src/**/*.scss' --max-warnings 0"
     },
     "repository": {
         "type": "git",
-        "url": "git+https://github.com/voipgrid/vialer-js.git"
+        "url": "https://github.com/voipgrid/vialer-js.git"
     },
     "keywords": [
         "electron",
@@ -24,7 +24,7 @@
         "telephony",
         "click-to-dial"
     ],
-    "author": "Jake",
+    "author": "Windshaft BV",
     "main": "main.js",
     "contributors": [
         {
@@ -41,11 +41,13 @@
     "bugs": {
         "url": "https://github.com/voipgrid/vialer-js/issues"
     },
-    "homepage": "https://wiki.voipgrid.nl/index.php/Browser_Plugins",
+    "homepage": "https://vialer-js.io",
     "devDependencies": {
         "archiver": "^2.1.1",
         "browserify": "^14.1.0",
+        "chrome-launcher": "^0.10.2",
         "chrome-webstore-upload": "^0.2.2",
+        "chromeless": "^1.5.2",
         "connect": "^3.6.0",
         "connect-mount": "^1.0.0",
         "del": "^2.2.2",
@@ -104,8 +106,8 @@
         "bulma-switch": "^0.1.4",
         "css-element-queries": "^0.4.0",
         "eventemitter3": "^2.0.3",
-        "gulp-sentry-release-manager": "0.0.5",
-        "raven-js": "^3.24.2",
+        "puppeteer": "^1.4.0",
+        "raven-js": "^3.26.3",
         "roboto-fontface": "^0.8.0",
         "sdp-transform": "^2.4.0",
         "shortid": "^2.2.8",

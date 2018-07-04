@@ -2,11 +2,11 @@ node_modules
 build
 dist
 docs/build
+super_secret.txt
 .tags
 .publish
 .vialer-jsrc
 .directory
-package-lock.json
 src/brand/*
 src/brand/vialer/icons/
 !src/brand/vialer/

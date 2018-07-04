@@ -72,7 +72,9 @@ class ModuleCalls extends Module {
                 let call = this._newCall({number, type})
 
                 // An actual call may only be made when calling is enabled.
-                if (start && !this.app.helpers.callingDisabled()) call.start()
+                if (start && !this.app.helpers.callingDisabled()) {
+                    call.start()
+                }
                 // Sync the others transfer state of other calls to the new situation.
                 this.__setTransferState()
                 // A newly created call is always activated unless
@@ -294,7 +296,7 @@ class ModuleCalls extends Module {
             }
 
             if (acceptCall) {
-                this.app.logger.info(`${this}accept incoming call.`)
+                this.app.logger.info(`${this}accept incoming call`)
                 // An ongoing call may be a closing call. In that case we first
                 // remove all the closing calls before starting the new one.
                 for (const callId of closingCalls) {
@@ -321,7 +323,7 @@ class ModuleCalls extends Module {
 
         this.ua.on('registered', () => {
             this.app.setState({calls: {ua: {status: 'registered'}}})
-            this.app.logger.info(`${this}ua registered`)
+            this.app.logger.info(`${this}registered on SIP endpoint`)
         })
 
 
@@ -333,13 +335,14 @@ class ModuleCalls extends Module {
 
         this.ua.on('connected', () => {
             this.app.setState({calls: {ua: {status: 'connected'}}})
-            this.app.logger.info(`${this}ua connected`)
+            this.app.logger.info(`${this}connected to SIP endpoint`)
             // Reset the retry interval timer..
             this.retry = Object.assign({}, this.retryDefault)
         })
 
 
         this.ua.on('disconnected', () => {
+            this.app.logger.debug(`${this}disconnected from SIP endpoint`)
             this.app.setState({calls: {ua: {status: 'disconnected'}}})
             // // Don't use SIPJS simpler reconnect logic, which doesn't have
             // // jitter and an increasing timeout.
@@ -350,7 +353,6 @@ class ModuleCalls extends Module {
             } else {
                 this.app.setState({calls: {ua: {status: 'inactive'}}})
                 this.retry = Object.assign({}, this.retryDefault)
-                this.app.logger.debug(`${this}ua disconnected (inactive)`)
                 this.reconnect = false
             }
 
@@ -377,6 +379,7 @@ class ModuleCalls extends Module {
     */
     __uaOptions() {
         const settings = this.app.state.settings
+
         // For webrtc this is a voipaccount, otherwise an email address.
         let options = {
             autostart: false,
@@ -395,7 +398,7 @@ class ModuleCalls extends Module {
             traceSip: false,
             iceCheckingTimeout: 500,
             userAgentString: this._userAgent(),
-            wsServers: [`wss://${settings.sipEndpoint}`],
+            wsServers: `wss://${settings.sipEndpoint}`,
         }
 
         // Log in with the WebRTC voipaccount when it is enabled.
@@ -734,18 +737,20 @@ class ModuleCalls extends Module {
     connect() {
         // Reconnect when already connected.
         if (this.ua && this.ua.isConnected()) {
+            this.app.logger.info(`${this}already connected; disconnecting`)
             this.disconnect(true)
             return
         }
 
+        this._uaOptions = this.__uaOptions()
+        this.app.logger.info(`${this}connecting to SIP endpoint ${this._uaOptions.wsServers}`)
         // Login with the WebRTC account or platform account.
-        let uaOptions = this.__uaOptions()
-        if (!uaOptions.authorizationUser || !uaOptions.password) {
-            this.app.logger.warn(`${this}cannot connect without username and password`)
+        if (!this._uaOptions.authorizationUser || !this._uaOptions.password) {
+            this.app.logger.error(`${this}cannot connect without username and password`)
         }
 
         // Fresh new instance is used each time, so we can reset settings properly.
-        this.ua = new SIP.UA(uaOptions)
+        this.ua = new SIP.UA(this._uaOptions)
         this.__uaEvents()
         this.ua.start()
     }
