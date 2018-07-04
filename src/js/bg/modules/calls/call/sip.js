@@ -259,6 +259,7 @@ class CallSIP extends Call {
             // trigger the Call to stop here.
             this._stop()
         } else {
+
             // Calls with other statuses need some more work to end.
             try {
                 if (this.state.status === 'invite') {
