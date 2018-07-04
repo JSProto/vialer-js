@@ -79,10 +79,19 @@ class AppBackground extends App {
             // The audio element is used to playback sounds with
             // (like ringtones, dtmftones). The video element is
             // used to attach the remote WebRTC stream to.
-            this.audio = document.createElement('audio')
-            this.video = document.createElement('video')
-            document.body.prepend(this.audio)
-            document.body.prepend(this.video)
+            this.localVideo = document.createElement('video')
+            this.localVideo.setAttribute('id', 'local')
+            this.localVideo.muted = true
+
+            this.remoteVideo = document.createElement('video')
+            this.remoteVideo.setAttribute('id', 'remote')
+            document.body.prepend(this.localVideo)
+            document.body.prepend(this.remoteVideo)
+
+            // Trigger play automatically. This is required for any audio
+            // to play during a call.
+            this.remoteVideo.addEventListener('canplay', () => this.remoteVideo.play())
+            this.localVideo.addEventListener('canplay', () => this.localVideo.play())
         }
 
         // Start by initializing all modules.
@@ -105,7 +114,6 @@ class AppBackground extends App {
         }
 
         if (!validSchema) this.__factoryDefaults(notification)
-
         this.emit('ready')
     }
 
@@ -151,6 +159,8 @@ class AppBackground extends App {
             this.__initServices()
         }
 
+        this.devices = new Devices(this)
+
         // Each module can define watchers on store attributes, which makes
         // it easier to centralize data-related logic.
         let watchers = {}
@@ -164,7 +174,6 @@ class AppBackground extends App {
         // (!) State is reactive after initializing the view-model.
         await this.__initViewModel(watchers)
 
-        this.devices = new Devices(this)
         // Signal all modules that AppBackground is ready to go.
         for (let module of Object.keys(this.modules)) {
             if (this.modules[module]._ready) this.modules[module]._ready()
@@ -185,7 +194,7 @@ class AppBackground extends App {
             return
         } else if (this.__mergeQueue.length) {
             // See if a request is queued before starting.
-            this.__mergeQueue.pop()()
+            this.__mergeQueue.shift()()
         }
 
         // Flag that the operation is currently in use.
@@ -197,9 +206,15 @@ class AppBackground extends App {
             return
         }
 
+        const storeEndpoint = this.state.user.username
+        // This should never happen, but catch the error in case it does.
+        if (!storeEndpoint) {
+            throw new Error('cannot write to store without a state target')
+        }
+
         // Background is leading and is the only one that
         // writes to storage using encryption.
-        let storeKey = encrypt ? `${this.state.user.username}/state/vault` : `${this.state.user.username}/state`
+        let storeKey = encrypt ? `${storeEndpoint}/state/vault` : `${storeEndpoint}/state`
         let storeState = this.store.get(storeKey)
 
         if (storeState) {
@@ -228,7 +243,7 @@ class AppBackground extends App {
 
         // See if a request is queued before leaving.
         if (this.__mergeQueue.length) {
-            this.__mergeQueue.pop()()
+            this.__mergeQueue.shift()()
         }
     }
 

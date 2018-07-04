@@ -73,7 +73,7 @@ class CallSIP extends Call {
 
         this.session.on('bye', (e) => {
             if (e.getHeader('X-Asterisk-Hangupcausecode') === '58') {
-                this.app.emit('fg:notify', {
+                this.app.notify({
                     icon: 'warning',
                     message: this.app.$t('your VoIP account misses AVPF and encryption support.'),
                     type: 'warning',
@@ -103,18 +103,36 @@ class CallSIP extends Call {
                 constraints: this.app._getUserMediaFlags(),
             },
         })
+
         // Notify user about the new call being setup.
         this.session.on('accepted', (data) => {
-            this.app.telemetry.event('call[sip]', 'outgoing', 'accepted')
-            this.pc = this.session.sessionDescriptionHandler.peerConnection
+            this.app.telemetry.event('call[sip]', 'outgoing', 'accepted');
 
+            // get receivers for electron worked only in accepted handler
+            this.pc = this.session.sessionDescriptionHandler.peerConnection // @FIXME
             this.pc.getReceivers().forEach((receiver) => {
                 this.remoteStream.addTrack(receiver.track)
-                this.app.video.srcObject = this.remoteStream
-                this.app.video.play()
+                this.app.remoteVideo.srcObject = this.remoteStream
+                this.app.remoteVideo.play()
             })
 
             this._start({message: this.translations.accepted.outgoing})
+        })
+
+        // Handle connecting streams to the appropriate video element.
+        this.session.on('trackAdded', async() => {
+            this.localStream = new MediaStream()
+            this.remoteStream = new MediaStream()
+
+            this.pc = this.session.sessionDescriptionHandler.peerConnection
+            this.pc.getReceivers().forEach((receiver) => this.remoteStream.addTrack(receiver.track))
+            this.app.remoteVideo.srcObject = this.remoteStream
+
+            // method getSenders not working in electron
+            if (this.pc.getSenders) {
+                this.pc.getSenders().forEach((sender) => this.localStream.addTrack(sender.track))
+                this.app.localVideo.srcObject = this.localStream
+            }
         })
 
         /**
@@ -171,19 +189,20 @@ class CallSIP extends Call {
     accept() {
         super.accept()
 
-        this.__trackAdded = false
-
+        // Handle connecting streams to the appropriate video element.
         this.session.on('trackAdded', () => {
-            if (!this.__trackAdded) {
-                this.pc = this.session.sessionDescriptionHandler.peerConnection
-                this.pc.getReceivers().forEach((receiver) => {
-                    this.remoteStream.addTrack(receiver.track)
-                    this.app.video.srcObject = this.remoteStream
-                    this.app.video.play()
-                })
-            }
+            this.localStream = new MediaStream()
+            this.remoteStream = new MediaStream()
 
-            this.__trackAdded = true
+            this.pc = this.session.sessionDescriptionHandler.peerConnection
+            this.pc.getReceivers().forEach((receiver) => this.remoteStream.addTrack(receiver.track))
+            this.app.remoteVideo.srcObject = this.remoteStream
+
+            // method getSenders not working in electron
+            if (this.pc.getSenders){
+                this.pc.getSenders().forEach((sender) => this.localStream.addTrack(sender.track))
+                this.app.localVideo.srcObject = this.localStream
+            }
         })
         this.session.accept({
             sessionDescriptionHandlerOptions: {
@@ -195,7 +214,11 @@ class CallSIP extends Call {
 
     hold() {
         if (this.session) {
-            this.session.hold()
+            this.session.hold({
+                sessionDescriptionHandlerOptions: {
+                    constraints: this.app._getUserMediaFlags(),
+                },
+            })
             this.setState({hold: {active: true}})
         }
     }
@@ -278,7 +301,11 @@ class CallSIP extends Call {
 
     unhold() {
         if (this.session) {
-            this.session.unhold()
+            this.session.unhold({
+                sessionDescriptionHandlerOptions: {
+                    constraints: this.app._getUserMediaFlags(),
+                },
+            })
             this.setState({hold: {active: false}})
         }
     }
