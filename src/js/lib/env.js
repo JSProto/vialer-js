@@ -91,21 +91,29 @@ function env({role}) {
         let electronNamespace = 'electron'
         window.electron = require(electronNamespace)
         _env.isElectron = true
-        if (_env.role.fg) {
-            $('html').classList.add('electron')
-            // In Electron, a different IPC mechanism is used to set
-            // the window height from the main script.
-            electron.ipcRenderer.send('resize-window', {
-                height: document.body.clientHeight,
-                width: document.body.clientWidth,
-            })
 
-            resizeSensor(document.body, (e) => {
+        let resizeWindow = function(){
+            if (document.body) {
                 electron.ipcRenderer.send('resize-window', {
                     height: document.body.clientHeight,
                     width: document.body.clientWidth,
-                })
-            })
+                });
+            }
+        }
+
+        if (_env.role.fg) {
+            window.onload = function(){
+
+                console.log(document, document.body);
+
+                $('html').classList.add('electron');
+
+                resizeSensor(document.body, resizeWindow);
+
+                // In Electron, a different IPC mechanism is used to set
+                // the window height from the main script.
+                resizeWindow();
+            };
         }
     } catch (e) {
         // Catch reference errors.
