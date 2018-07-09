@@ -20,5 +20,10 @@
         <div class="option queues test-menubar-queues" :class="classes('queues')" @click="setLayer('queues')">
             <icon name="queues"/>
         </div>
+
+        <div class="logo test-menubar-logo" :class="classes('logo')">
+            <icon name="logo"/>
+        </div>
+
     </div>
 </component>

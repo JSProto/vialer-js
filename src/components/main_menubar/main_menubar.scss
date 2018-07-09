@@ -10,7 +10,19 @@
 
     .options {
         position: fixed;
+        display: flex;
+        flex-direction: column;
+        height: 100%;
         width: $spacer * 5;
+
+        .logo {
+            height: $spacer * 7;
+            margin-top: auto;
+            margin-bottom: 38px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
 
         .option {
             align-items: center;
