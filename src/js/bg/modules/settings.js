@@ -39,10 +39,10 @@ class ModuleSettings extends Module {
             },
             language: {
                 options: [
-                    {id: 'nl', name: this.app.$t('dutch')},
-                    {id: 'en', name: this.app.$t('english')},
+                    {id: 'nl', name: 'nederlands'},
+                    {id: 'en', name: 'english'},
                 ],
-                selected: {id: 'en', name: this.app.$t('english')},
+                selected: {id: null, name: null},
             },
             platform: {
                 enabled: true,

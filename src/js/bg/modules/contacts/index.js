@@ -41,6 +41,7 @@ class ModuleContacts extends Module {
             displayMode: 'lean',
             filters: {
                 favorites: false,
+                online: true, // Hide contacts that don't have registered endpoints.
             },
             search: {
                 disabled: false,
@@ -89,7 +90,7 @@ class ModuleContacts extends Module {
 
     /**
     * State that is bound to a Class is more complicated to
-    * restore when Vue & Vue-stash are already  initialized.
+    * restore when Vue & Vue-stash are already initialized.
     * This happens when a user unlocks.
     * @param {Object} moduleStore - Root property for this module.
     */
@@ -119,7 +120,7 @@ class ModuleContacts extends Module {
 
 
     /**
-    * Compare, updates and creates Contact instances with appropriate state
+    * Compare, update and create Contact instances with appropriate state
     * from VoIP-accounts that are listed under a client on
     * the VoIPGRID platform.
     * @param {Array} voipaccounts - The endpoints to check against.
@@ -136,17 +137,21 @@ class ModuleContacts extends Module {
                 }
             }
 
+            let contact
+
             if (endpointMatch) {
+                // The contact already exists in state but not as
+                // a logical Contact class yet. Hydrate it.
                 if (!this.contacts[endpointMatch.contact.id]) {
-                    // The contact already exists in state but not as
-                    // a logical Contact class. Hydrate one.
-                    this.contacts[endpointMatch.contact.id] = new Contact(this.app, endpointMatch.contact)
+                    contact = new Contact(this.app, endpointMatch.contact)
+                    this.contacts[contact.id] = contact
                 }
+
             } else {
                 // The contact endpoint doesn't exist yet. Create a new Contact with
                 // this endpoint as it's only endpoint. Use the name of the
                 // endpoint for the default Contact name.
-                let contact = new Contact(this.app, {
+                contact = new Contact(this.app, {
                     endpoints: {
                         [endpoint.account_id]: {
                             active: endpoint.sipreginfo ? true : false,
