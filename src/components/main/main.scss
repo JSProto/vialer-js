@@ -69,6 +69,8 @@ html {
         // Show a scrollbar when the content height exceeds the max-height.
         overflow-y: auto;
 
+        padding-bottom: ($spacer * 2);
+
         // Split into grid columns for the menubar when logged in.
         &.sidebar {
             grid-template-columns: ($spacer * 5) auto;

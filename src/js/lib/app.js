@@ -8,6 +8,7 @@ const Sounds = require('./sounds')
 * translations.
 * @extends Skeleton
 */
+
 class App extends Skeleton {
 
     constructor(options) {

@@ -110,26 +110,29 @@ class AppElectron {
         this.tray = new Tray(path.join(__dirname, 'img', 'electron-systray.png'));
         this.tray.setToolTip(settings.name);
 
+        let width = 370;
+        let height = 495;
 
         // Create the browser window.
         this.mainWindow = new BrowserWindow({
             autoHideMenuBar: true,
-            height: 495,
             icon: path.join(__dirname, 'img', 'electron-icon.png'),
             // resizable: false,
             show: false,
             title: settings.name,
-            width: 500,
+            height, width
         });
 
         this.mainWindow.webContents.toggleDevTools();
 
         ipcMain.on('resize-window', (event, data) => {
+            if (!this.mainWindow) return;
+
             const currentSize = this.mainWindow.getContentSize();
 
             if (data.height !== currentSize[1]) {
                 if (data.height > 600) data.height = 600;
-                this.mainWindow.setSize(500, data.height, true);
+                this.mainWindow.setSize(width, data.height, true);
             }
         });
 

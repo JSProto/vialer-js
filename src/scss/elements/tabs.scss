@@ -8,6 +8,10 @@
         margin-bottom: $spacer * 2;
     }
 
+    .icon:first-child {
+        margin-right: 0.1em;
+    }
+
     &.tabs-squeezed {
 
         ul {
