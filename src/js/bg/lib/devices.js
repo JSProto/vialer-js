@@ -65,9 +65,9 @@ class Devices {
         for (const device of devices) {
             if (device.id === 'default') device.label = this.app.$t('default').capitalize()
             if (device.kind === 'audioinput') {
-                input.push({id: device.deviceId, name: escape(device.label), valid: true})
+                input.push({id: device.deviceId, name: device.label, valid: true})
             } else if (device.kind === 'audiooutput') {
-                output.push({id: device.deviceId, name: escape(device.label), valid: true})
+                output.push({id: device.deviceId, name: device.label, valid: true})
             }
         }
 

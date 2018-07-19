@@ -103,11 +103,7 @@ function env({role}) {
 
         if (_env.role.fg) {
             window.onload = function(){
-
-                console.log(document, document.body);
-
                 $('html').classList.add('electron');
-
                 resizeSensor(document.body, resizeWindow);
 
                 // In Electron, a different IPC mechanism is used to set

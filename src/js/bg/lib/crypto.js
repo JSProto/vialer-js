@@ -2,6 +2,8 @@
 * Symmetric and assymetric WebCrypto helper class.
 * Source: https://github.com/garage11/lib11/
 */
+const utf8 = require('utf8');
+
 class Crypto {
     /**
     * Setup some crypto algorithm parameters.
@@ -351,7 +353,7 @@ class Crypto {
         else additionalData = this.__dataArray(0)
         const encrypted = await crypto.subtle.encrypt(
             {additionalData, iv, name: 'AES-GCM', tagLength: 128},
-            sessionKey, this.__stringToDataArray(plaintext))
+            sessionKey, this.__stringToDataArray(utf8.encode(plaintext)))
         return {
             additionalData: this.__dataArrayToBase64(additionalData),
             cipher: this.__dataArrayToBase64(encrypted),
