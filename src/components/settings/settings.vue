@@ -32,6 +32,13 @@
             :options="settings.language.options"
             :placeholder="$t('select a language')"/>
 
+        <Field name="theme" type="select"
+            :help="$t('theme used in the application.')"
+            :label="$t('application theme')"
+            :model.sync="settings.theme.selected"
+            :options="settings.theme.options"
+            :placeholder="$t('select a theme')"/>
+
         <Field v-if="user.developer" name="language" type="textarea"
             :help="$t('blacklist sites that don\'t work well with Click-to-dial icons.')"
             :label="`${$t('click-to-Dial')} ${$t('blacklist')}`"

@@ -157,8 +157,17 @@ module.exports = (app) => {
             * @param {Object} language - Selected language.
             */
             'settings.language.selected': function(language) {
-                app.logger.info(`${this} setting language to ${language.id}`)
+                app.logger.info(`${app}setting language to ${language.id}`)
                 Vue.i18n.set(language.id)
+            },
+
+            'settings.theme.selected': function(theme) {
+                app.logger.info(`${app}setting theme to ${theme.name}`)
+
+                let cl = $('html').classList;
+                let themes = Array.from(cl).filter(t => ~t.indexOf('theme'));
+                cl.remove.apply(cl, themes);
+                cl.add(theme.id)
             },
         },
     }

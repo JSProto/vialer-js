@@ -11,6 +11,7 @@ const env = require('../lib/env')({role: 'fg'})
 * AppBackground to render its state.
 * @extends App
 */
+
 class AppForeground extends App {
     /**
     * Set some application events, initialize Vue components and
@@ -86,6 +87,14 @@ class AppForeground extends App {
 
                 await this.__initViewModel()
                 this.vm.$mount(document.querySelector('#app-placeholder'))
+
+                let cl = $('html').classList;
+                const theme = this.state.settings.theme.selected.id;
+
+                if (theme && !cl.contains(theme)) {
+                    cl.add(theme);
+                }
+
                 this.setState({ui: {visible: true}})
                 if (this.env.isExtension) {
                     // Keep track of the popup's visibility status by

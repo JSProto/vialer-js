@@ -44,6 +44,13 @@ class ModuleSettings extends Module {
                 ],
                 selected: {id: null, name: null},
             },
+            theme: {
+                options: [
+                    {id: 'theme-default', name: 'default'},
+                    {id: 'theme-dark', name: 'dark'},
+                ],
+                selected: {id: null, name: null},
+            },
             platform: {
                 enabled: true,
                 url: process.env.PLATFORM_URL,
