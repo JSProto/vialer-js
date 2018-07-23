@@ -36,6 +36,14 @@ class ModuleCalls extends Module {
          * @property {callId} callId - Id of the Call object to accept.
          */
         this.app.on('bg:calls:call_accept', ({callId}) => this.calls[callId].accept())
+
+        this.app.on('bg:calls:call_accept', ({callId}) => {
+            this.app.api.client.put('phone-call/mark-vm-as-read', {callId});
+            // .then(res => {
+            //     this.app.logger.debug(JSON.stringify(res, null, ' '));
+            // })
+        })
+
         /**
          * Set this Call to be the visible Call.
          * @event bg:calls:call_activate

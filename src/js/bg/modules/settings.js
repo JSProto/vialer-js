@@ -39,8 +39,8 @@ class ModuleSettings extends Module {
             },
             language: {
                 options: [
-                    {id: 'nl', name: 'nederlands'},
                     {id: 'en', name: 'english'},
+                    {id: 'nl', name: 'nederlands'}
                 ],
                 selected: {id: null, name: null},
             },
