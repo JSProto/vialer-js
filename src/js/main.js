@@ -1,6 +1,6 @@
 
 const electron = require('electron');
-const {app, ipcMain, Tray, BrowserWindow} = electron;
+const {app, ipcMain, Tray, BrowserWindow, Menu} = electron;
 
 const path = require('path');
 const url = require('url');
@@ -84,11 +84,15 @@ function handleSquirrelEvent () {
 class AppElectron {
 
     constructor() {
+        // app.dock.hide();
+
         // This method will be called when Electron has finished
         // initialization and is ready to create browser windows.
         // Some APIs can only be used after this event occurs.
         app.on('ready', this.createWindow);
+
         app.commandLine.appendSwitch('ignore-certificate-errors');
+
         // Quit when all windows are closed.
         app.on('window-all-closed', () => {
             // On OS X it is common for applications and their menu bar
@@ -107,8 +111,24 @@ class AppElectron {
 
 
     createWindow() {
+        var contextMenu = Menu.buildFromTemplate([
+            { label: 'Show', click: () => {
+                this.mainWindow.show();
+            } },
+            { label: 'Quit', click:  function(){
+                app.isQuiting = true;
+                app.quit();
+            } }
+        ]);
+
         this.tray = new Tray(path.join(__dirname, 'img', 'electron-systray.png'));
         this.tray.setToolTip(settings.name);
+        this.tray.setContextMenu(contextMenu);
+
+        this.tray.on('click', () => {
+            if (!this.mainWindow) return;
+            this.mainWindow.isVisible() ? this.mainWindow.hide() : this.mainWindow.show()
+        })
 
         let width = 370;
         let height = 495;
@@ -117,10 +137,12 @@ class AppElectron {
         this.mainWindow = new BrowserWindow({
             autoHideMenuBar: true,
             icon: path.join(__dirname, 'img', 'electron-icon.png'),
-            // resizable: false,
+            resizable: false,
             show: false,
             title: settings.name,
-            height, width
+            height, width,
+            'min-width': width,
+            // 'min-height': 300,
         });
 
         this.mainWindow.webContents.toggleDevTools();
@@ -132,6 +154,7 @@ class AppElectron {
 
             if (data.height !== currentSize[1]) {
                 if (data.height > 600) data.height = 600;
+                if (data.height < 100) data.height = 100;
                 this.mainWindow.setSize(width, data.height, true);
             }
         });
@@ -143,7 +166,16 @@ class AppElectron {
             slashes: true,
         }));
 
-        this.mainWindow.on('ready-to-show', () => this.mainWindow.show());
+        this.mainWindow.on('ready-to-show', () => this.mainWindow && this.mainWindow.show());
+        this.mainWindow.on('show', () => this.tray.setHighlightMode('always'));
+
+        this.mainWindow.on('close', e => {
+            if (!app.isQuiting) {
+                e.preventDefault();
+                this.mainWindow.hide();
+            }
+            return false;
+        });
 
         // Emitted when the window is closed.
         this.mainWindow.on('closed', () => {

@@ -269,7 +269,7 @@ gulp.task('build-dist', 'Make an optimized build suitable for distribution.', ['
 }, {options: taskOptions.all})
 
 
-gulp.task('build-installer', 'Make installer for distribution.', /* ['build-dist'],  */ (done) => {
+gulp.task('build-installer', 'Make installer for distribution.', ['build-dist'], (done) => {
 
     if (settings.BUILD_TARGET !== 'electron') return;
 

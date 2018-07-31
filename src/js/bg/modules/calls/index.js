@@ -387,7 +387,7 @@ class ModuleCalls extends Module {
             autostop: false,
             log: {
                 builtinEnabled: true,
-                level: 'error',
+                level: 3,
             },
             sessionDescriptionHandlerFactoryOptions: {
                 constraints: {
