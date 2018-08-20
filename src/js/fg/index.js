@@ -51,6 +51,7 @@ class AppForeground extends App {
             MainCallBar: require('../../components/main_callbar'),
             MainMenuBar: require('../../components/main_menubar'),
             MainStatusBar: require('../../components/main_statusbar'),
+            Messages: require('../../components/messages'),
             MicPermission: require('../../components/mic_permission'),
             Notifications: require('../../components/notifications'),
             Queues: require('../../components/queues'),

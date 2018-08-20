@@ -23,6 +23,11 @@
             padding-left: $spacer / 2;
         }
 
+        &.transparent {
+            background: transparent;
+            &:hover {background: transparent;}
+        }
+
         &.green {
             background: $green-color;
             &:hover {background: darken($green-color, 10%);}

@@ -59,6 +59,9 @@
                 </div>
 
                 <div class="item-slider">
+                    <div class="item-slider-option sms-button" v-on:click="sendMessage(contact)">
+                        <icon name="mail"/>
+                    </div>
                     <div class="item-slider-option green cf" v-if="transferStatus === 'select' && !numbersOngoing.includes(contact.number)" v-on:click.once="callContact(contact)">
                         {{$t('transfer')}}
                         <icon name="transfer"/>

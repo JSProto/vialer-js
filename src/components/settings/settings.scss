@@ -44,3 +44,12 @@
         margin-top: $spacer * 3;
     }
 }
+
+
+.theme-dark {
+    .component-settings {
+        .tab {
+            background-color: red;
+        }
+    }
+}

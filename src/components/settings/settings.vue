@@ -39,7 +39,7 @@
             :options="settings.theme.options"
             :placeholder="$t('select a theme')"/>
 
-        <Field v-if="user.developer" name="language" type="textarea"
+        <Field v-if="user.developer" name="blacklist" type="textarea"
             :help="$t('blacklist sites that don\'t work well with Click-to-dial icons.')"
             :label="`${$t('click-to-Dial')} ${$t('blacklist')}`"
             :model.sync="settings.click2dial.blacklist"

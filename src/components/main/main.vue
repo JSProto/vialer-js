@@ -20,6 +20,7 @@
                 <Availability v-if="layer==='availability'"/>
                 <Contacts v-else-if="layer==='contacts'"/>
                 <Queues v-else-if="layer==='queues'"/>
+                <Messages v-else-if="layer==='messages'"/>
                 <Settings v-else-if="layer==='settings'"/>
                 <Calls v-else-if="layer==='calls'"/>
                 <Activity v-else-if="layer==='activity'"/>

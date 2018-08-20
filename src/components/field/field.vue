@@ -1,5 +1,5 @@
 <div class="field field-checkbox" v-if="type === 'checkbox'">
-    <input class="switch" :class="css" :disabled="disabled" :id="name" type="checkbox" :name="name" @change="updateModel($event)" :checked="model"/>
+    <input class="switch" :class="css" :disabled="disabled" :readonly="readonly"  :id="name" type="checkbox" :name="name" @change="updateModel($event)" :checked="model"/>
     <label :for="name" class="checkbox ca" >{{label}}</label>
     <em class="help cf" v-if="help && !invalidFieldValue">{{help}}</em>
     <span v-if="invalidFieldValue" class="validation-message help is-danger" v-html="validationMessage"></span>
@@ -10,7 +10,7 @@
 <div class="field field-color" v-else-if="type === 'color'">
     <label class="label ca" :for="name">{{label}}</label>
     <input class="input" type="color" @change="updateModel($event)"
-        v-bind:value="model" :disabled="disabled"/>
+        v-bind:value="model" :disabled="disabled" :readonly="readonly" />
 </div>
 
 
@@ -44,7 +44,7 @@
     <div class="control">
         <input type="password" :class="classes('input')"
             @input="updateModel($event)" :value="model"
-            :id="name" :name="name" :placeholder="placeholder.capitalize()" :disabled="disabled"/>
+            :id="name" :name="name" :placeholder="placeholder.capitalize()" :disabled="disabled" :readonly="readonly" />
     </div>
     <em class="help cf" v-if="help">{{help}}</em>
     <span class="validation-message help is-danger" :class="{hide: !invalidFieldValue, show: invalidFieldValue}" v-html="validationMessage"></span>
@@ -56,7 +56,7 @@
     <div class="control">
         <div v-bind:class="classes('select')">
             <select v-on:change="updateModel($event)" :id="name"
-                :name="name" :v-bind:value="model" :disabled="disabled || !options.length">
+                :name="name" :v-bind:value="model" :disabled="disabled || !options.length" :readonly="readonly">
                 <template v-if="!options.length">
                     <option value="" disabled selected class="cf">{{$t(empty)}}</option>
                 </template>
@@ -80,7 +80,7 @@
     <div class="control">
         <input type="text" :class="classes('input')"
             @input="updateModel($event)" :value="model"
-            :id="name" :name="name" :placeholder="placeholder.capitalize()" :disabled="disabled" :autofocus="autofocus"/>
+            :id="name" :name="name" :placeholder="placeholder.capitalize()" :disabled="disabled" :readonly="readonly" :autofocus="autofocus"/>
     </div>
     <em class="help cf" v-if="help">{{help}}</em>
     <span class="validation-message help is-danger" :class="{hide: !invalidFieldValue, show: invalidFieldValue}" v-html="validationMessage"></span>
@@ -90,6 +90,6 @@
 <div class="field field-textarea" v-else-if="type === 'textarea'">
     <label class="label ca" :class="classes('label')" :for="name">{{label}}</label>
     <textarea class="textarea" v-on:input="updateModel($event)" :value="model.join('\n')"
-         :id="name" :name="name" :placeholder="placeholder" :disabled="disabled">{{model.join('\n')}}</textarea>
+         :id="name" :name="name" :placeholder="placeholder" :disabled="disabled" :readonly="readonly" >{{model.join('\n')}}</textarea>
     <span class="validation-message help is-danger" :class="{hide: !invalidFieldValue, show: invalidFieldValue}" v-html="validationMessage"></span>
 </div>

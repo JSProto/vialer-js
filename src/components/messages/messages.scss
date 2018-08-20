@@ -1,0 +1,132 @@
+@import "../../scss/lib/mixins";
+@import "../../scss/lib/variables";
+
+.component-messages {
+
+
+    .content-filters {
+        width: 100%;
+        justify-content: flex-start;
+
+        .close-button {
+            margin-left: auto;
+        }
+    }
+
+    .messages-options {
+        display: flex;
+
+        input {
+            margin-right: $spacer * 2;
+        }
+    }
+
+    .message-chat {
+        display: flex;
+        flex-direction: column;
+        padding-bottom: 20px;
+
+        .message-form {
+            display: flex;
+            flex-direction: column;
+        }
+
+        .messages-list {
+            display: flex;
+            flex-direction: column;
+
+            .message-info {
+                margin: 4px 0;
+                padding: 1px 10px;
+                position: relative;
+                background: #00aabb;
+                border-radius: .4em;
+
+                &:after {
+                    content: '';
+                    position: absolute;
+                    top: 50%;
+                    width: 0;
+                    height: 0;
+                    border: 10px solid transparent;
+                    margin-top: -5px;
+                }
+
+                &.in {
+                    text-align: left;
+                    align-self: flex-start;
+
+                    &:after {
+                        left: 0;
+                        border-right-color: #00aabb;
+                        border-left: 0;
+                        border-top: 0;
+                        margin-left: -10px;
+                    }
+                }
+
+                &.out {
+                    text-align: right;
+                    align-self: flex-end;
+
+                    &:after {
+                        right: 0;
+                        border-left-color: #00aabb;
+                        border-right: 0;
+                        border-bottom: 0;
+                        margin-right: -10px;
+                    }
+                }
+            }
+        }
+
+
+    }
+
+    .messages-list {
+        display: flex;
+        flex-direction: column;
+
+
+        .message {
+            align-items: center;
+            display: flex;
+            justify-content: space-between;
+            margin: $spacer 0;
+            position: relative;
+            width: 100%;
+
+            .message-info {
+                display: flex;
+                flex: 1;
+                flex-direction: column;
+                // Required to have ellipsis text overflow on .name.
+                min-width: 0;
+
+                .name {
+                    flex: 1;
+                    font-weight: 500;
+                    overflow: hidden;
+                    text-overflow: ellipsis;
+                    white-space: nowrap;
+                }
+
+                .description {
+                    color: $grey-color-darker;
+                    font-size: 0.9rem;
+                }
+            }
+
+            .contact-specials {
+                .favorite {
+                    color: $yellow-color;
+                }
+            }
+
+            &:hover {
+                @include item-slider-activate;
+                cursor: pointer;
+            }
+        }
+    }
+}

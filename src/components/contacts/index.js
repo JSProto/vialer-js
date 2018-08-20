@@ -100,6 +100,11 @@ module.exports = (app) => {
             toggleFilterOnline: function() {
                 app.setState({contacts: {filters: {online: !this.filters.online}}}, {persist: true})
             },
+
+            sendMessage: function(contact) {
+                // app.setState({selected: contact}, {path: `contacts.contacts.${contact.id}`})
+                this.setLayer('messages');
+            },
         }, app.helpers.sharedMethods()),
         render: templates.contacts.r,
         staticRenderFns: templates.contacts.s,

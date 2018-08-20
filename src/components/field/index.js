@@ -95,10 +95,12 @@ module.exports = (app) => {
                 if (block === 'input') {
                     classes.input = true
                     if (this.invalidFieldValue) classes['is-danger'] = true
-                } else if (block === 'select') {
+                }
+                else if (block === 'select') {
                     classes.select = true
                     if (this.invalidFieldValue) classes['is-danger'] = true
-                } else if (block === 'label') {
+                }
+                else if (block === 'label') {
                     // Field has no validation at all.
                     if (this.validation) {
                         if (this.validation.required === false || this.validation.required === true) {
@@ -135,9 +137,11 @@ module.exports = (app) => {
                 // Toggles value of a checkbox.
                 if (event.target.type === 'checkbox') {
                     this.$emit('update:model', event.target.checked)
-                } else if (['password', 'text'].includes(event.target.type)) {
+                }
+                else if (['password', 'text'].includes(event.target.type)) {
                     this.$emit('update:model', event.target.value)
-                } else if (event.target.tagName === 'SELECT') {
+                }
+                else if (event.target.tagName === 'SELECT') {
                     // A multiselect.
                     if (event.target.multiple) {
                         let selectedOptions = Array.prototype.filter.apply(event.target.options, [(i) => i.selected])
@@ -148,14 +152,16 @@ module.exports = (app) => {
 
                     if (!value) {
                         this.$emit('update:model', this.emptySelectOption())
-                    } else {
+                    }
+                    else {
                         for (const option of this.options) {
                             if (String(option.id) === String(value)) {
                                 this.$emit('update:model', option)
                             }
                         }
                     }
-                } else if (event.target.tagName === 'TEXTAREA') {
+                }
+                else if (event.target.tagName === 'TEXTAREA') {
                     // For now assume each line is an item in an Array, because
                     // it suits the usecases for the blacklist items. Extend
                     // when other usecases (plain text) are required.
@@ -182,6 +188,7 @@ module.exports = (app) => {
             click: Function,
             css: '',
             disabled: Boolean,
+            readonly: Boolean,
             empty: {
                 default: app.$t('no options available'),
                 type: String,

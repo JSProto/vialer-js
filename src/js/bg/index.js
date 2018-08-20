@@ -408,6 +408,7 @@ let bgOptions = {env, modules: [
     {Module: require('./modules/availability'), name: 'availability'},
     {Module: require('./modules/calls'), name: 'calls'},
     {Module: require('./modules/contacts'), name: 'contacts'},
+    {Module: require('./modules/messages'), name: 'messages'},
     {Module: require('./modules/settings'), name: 'settings'},
     {Module: require('./modules/queues'), name: 'queues'},
     {Module: require('./modules/ui'), name: 'ui'},

@@ -2,7 +2,7 @@
 
     <div class="options">
         <div class="option calls test-menubar-calls" :class="classes('calls')" @click="setLayer('calls')">
-             <icon name="dialpad"/>
+            <icon name="dialpad"/>
         </div>
 
         <div class="option activity test-menubar-activity" :class="classes('activity')" @click="setLayer('activity')">
@@ -11,6 +11,10 @@
 
         <div class="option contacts test-menubar-contacts" :class="classes('contacts')" @click="setLayer('contacts')">
             <icon name="contacts"/>
+        </div>
+
+        <div class="option messages test-menubar-messages" :class="classes('messages')" @click="setLayer('messages')">
+            <icon name="mail"/>
         </div>
 
         <div class="option availability test-menubar-availability" :class="classes('availability')" @click="setLayer('availability')">
